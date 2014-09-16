@@ -1,9 +1,8 @@
 module Rack
   module ApiKeyLimit
     class Base
-      def initialize(app, counter, options)
+      def initialize(app, options)
         @app = app
-        @counter = counter
         @options = options
       end
 
@@ -11,13 +10,13 @@ module Rack
         @options || {}
       end
 
-      def counter
-        @counter
+      def cache
+        @options[:cache]
       end
 
       def call(env)
         request = Rack::Request.new(env)
-        key = get_key(request, counter)
+        key = get_key(request, cache)
         allowed?(request, key) ? not_rate_limited(env, request, key) : rate_limit_exceeded(key)
       end
 
@@ -33,7 +32,7 @@ module Rack
         request.params.has_key?(param_name)
       end
 
-      def get_key(request, counter)
+      def get_key(request, cache)
         raise NotImplementedError.new("You must implement get_key.")
       end
 
@@ -64,7 +63,7 @@ module Rack
       end
 
       def request_count(key)
-        request_count = counter.get(key)
+        request_count = cache.get(key)
         (request_count.to_i if request_count) || 0
       end
 
@@ -74,7 +73,7 @@ module Rack
 
       def allowed?(request, key)
         return true unless has_param?(request) # always allowed if no key present
-        counter.increment(key, limit_seconds) and return true if remaining(key) > 0
+        cache.increment(key, limit_seconds) and return true if remaining(key) > 0
       end
 
       def http_error(code, message = nil, headers = {})

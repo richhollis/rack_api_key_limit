@@ -1,6 +1,6 @@
 module Rack
   module ApiKeyLimit
-    module Counter
+    module Cache
       class Redis
         def initialize(redis)
           @redis = redis

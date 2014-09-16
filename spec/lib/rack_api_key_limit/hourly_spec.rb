@@ -4,15 +4,15 @@ describe Rack::ApiKeyLimit::Hourly do
 
   include Rack::Test::Methods
 
-  let(:counter) { CounterStub.new }
-  let(:app) { described_class.new(example_target_app, counter, {}) }
+  let(:cache) { CacheStub.new }
+  let(:app) { described_class.new(example_target_app, {cache: cache}) }
 
   describe "#get_key" do
     it "returns expected format" do
       request = double("request object")
       allow(request).to receive(:params).and_return({"api_key" => "ABC" })
       Timecop.freeze(spec_time) { 
-        expect(app.get_key(request, counter)).to eq("api_key-rate-limit:ABC-13")
+        expect(app.get_key(request, cache)).to eq("api_key-rate-limit:ABC-13")
       }
     end
   end

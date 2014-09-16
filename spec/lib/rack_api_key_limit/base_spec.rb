@@ -4,8 +4,8 @@ describe Rack::ApiKeyLimit::Base do
 
   include Rack::Test::Methods
 
-  let(:counter) { CounterStub.new }
-  let(:app) { app_stub_with_options({}) }
+  let(:cache) { CacheStub.new }
+  let(:app) { app_stub_with_options({cache: cache}) }
 
   context "api_key not present" do
     before(:each) { get "/foo" }
@@ -31,7 +31,7 @@ describe Rack::ApiKeyLimit::Base do
     end
     context "counter at max limit" do
       before(:each) { 
-        allow(counter).to receive(:get).and_return(150) 
+        allow(cache).to receive(:get).and_return(150) 
         Timecop.freeze(spec_time) { get "/foo?api_key=test" }
       }
       it "returns rate limit error body" do
@@ -49,21 +49,21 @@ describe Rack::ApiKeyLimit::Base do
   end
   context "options" do
     context "param_name" do
-      let(:app) { app_stub_with_options({param_name: "my_api_key"}) }
+      let(:app) { app_stub_with_options({cache: cache, param_name: "my_api_key"}) }
       it "uses specified param name" do
         get "/foo?my_api_key=test"
         expect(last_response.headers).to include({"X-RateLimit-Remaining" => "149"})
       end
     end
     context "request_limit" do
-      let(:app) { app_stub_with_options({request_limit: 10}) }
+      let(:app) { app_stub_with_options({cache: cache, request_limit: 10}) }
       it "uses specified request_limit" do
         get "/foo?api_key=test"
         expect(last_response.headers).to include({"X-RateLimit-Remaining" => "9"})
       end
     end
     context "status & message" do
-      let(:app) { app_stub_with_options({status: 403, message: "Rate limit!", request_limit: 0}) }
+      let(:app) { app_stub_with_options({cache: cache, status: 403, message: "Rate limit!", request_limit: 0}) }
       it "uses specified status and message" do
         get "/foo?api_key=test"
         expect(last_response.body).to eq "403 Forbidden (Rate limit!)\n"

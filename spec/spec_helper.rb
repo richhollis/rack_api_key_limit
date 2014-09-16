@@ -16,10 +16,11 @@ def example_target_app
 end
 
 def app_stub_with_options(options)
-  LimiterStub.new(example_target_app, counter, options)
+  cache = CacheStub.new
+  LimiterStub.new(example_target_app, options)
 end
 
-class CounterStub
+class CacheStub
   def initialize
     @counter = 0
   end
