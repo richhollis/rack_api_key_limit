@@ -1,5 +1,9 @@
-require "rack_api_key_limit/base_limit"
-require "rack_api_key_limit/hourly_limit"
+require "rack_api_key_limit/version"
+require "rack_api_key_limit/counter/redis"
+require "rack_api_key_limit/base"
+require "rack_api_key_limit/hourly"
 
-module RackApiKeyLimit
+module Rack
+  module ApiKeyLimit
+  end
 end
