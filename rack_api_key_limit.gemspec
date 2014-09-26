@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Rack::ApiKeyLimit::VERSION
   spec.authors       = ["Rich Hollis"]
   spec.email         = ["richhollis@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{Rack middleware for limiting requests based on an parameter}
+  spec.summary       = %q{The middleware uses a default strategy of hourly limiting for api keys but has been designed so that you can implement your own strategies and cache stores.}
+  spec.homepage      = "https://github.com/richhollis/rack_api_key_limit"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
@@ -22,4 +22,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec", "~> 3"
   spec.add_development_dependency "timecop"
+  spec.add_development_dependency 'rack-test', '>= 0.5.3'
+
+  spec.add_runtime_dependency     'rack',      '>= 1.0.0'
+
 end
