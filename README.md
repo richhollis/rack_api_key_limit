@@ -56,13 +56,21 @@ Or install it yourself as:
 
 ### Rails 3 installation
 
-config/application.rb
+config/production.rb
 
 ```
-config.middleware.insert_before 'Rack::Cache', Rack::ApiKeyLimit::Hourly, {
-  cache: Rack::ApiKeyLimit::Cache::Redis.new(your_redis_instance),
-  request_limit: 100
-}
+Getaroom::Application.configure do
+  # Settings specified here will take precedence over those in config/application.rb
+
+  #
+  # ...
+  #  
+
+  config.middleware.insert_before 'Rack::Cache', Rack::ApiKeyLimit::Hourly, {
+    cache: Rack::ApiKeyLimit::Cache::Redis.new(your_redis_instance),
+    request_limit: 100
+  }
+end
 ```
 
 ## Contributing
